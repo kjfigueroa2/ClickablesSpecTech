@@ -1,14 +1,7 @@
 
 /***********************************************************************************
-  ClickableAllocator
-  by Scott Kildall
-  
-  Start your localhost before running this, otherwise no PNGs will display
-
-  Shows an example of how to use allocation tables with the
-  modified p5.clickable class. This uses a ClickableManager class to
-  (1) allocate and set variables from a .csv file
-  (2) draw all the clickables that are visible in a single function
+Clickables Speculative Technology
+by Kaila Figueroa
 
 
 ***********************************************************************************/
@@ -18,84 +11,116 @@ var clickablesManager;
 
 // an array of clickable objects
 var clickables;
+var gDebugMode = false;
 
-// indexes into the array (constants)
-const redIndex = 0;
-const greenIndex = 1;
-const yellowIndex = 2;
-const inflateIndex = 3;
-const deflateIndex = 4;
+// indexes into the array (constants) CHANGE to be png for conform and deconform
+const correctIndex = 0;
+const cautionIndex = 1;
+const wrongIndex = 2;
+const sleepIndex = 3;
+const printIndex = 4;
+const speakIndex = 5;
+const resetIndex = 6;
 
-// constants for the balloon
-const startEllipseDiameter = 30;
-const poppedEllipseDiameter = 0;
-const deflateAmount = 10;
-const inflateAmount = 5;
-const maxDiameter = 200;
-const minDeflateDiameter = 5;
+//list of variables 
+let og;
+let correct;
+let caution;
+let wrong;
+let sleep;
+let printMode;
+let speak;
+let resetMode;
 
-// variables for the ballon
-var ellipseDiameter = startEllipseDiameter;
+let current_img;
+let print_img;
+let speak_img;
+let current_txt;
 
-// pop soun
-var popSound;
 
-// ALWAYS allocate the ClickableManager in the preload() function
-// if you get an error here, it is likely the .csv file that is not the
-// correct filename or path
 function preload(){
   clickablesManager = new ClickableManager('assets/clickableLayout.csv');
 }
 
-// ALWAYS call the setup() funciton for ClickableManager in the setup(), after
-// the class has been allocated in the preload() function.
-function setup() {
-  createCanvas(1280,600);
 
-  // load the pop sound
-  soundFormats('mp3');
-  popSound = loadSound('assets/pop.mp3');
+function setup() {
+  createCanvas(900,600);
+  og = loadImage('assets/og_Mode.png');
+  correct = loadImage('assets/correct_Mode.png');
+  caution = loadImage('assets/caution_Mode.png');
+  wrong = loadImage('assets/wrong_Mode.png');
+  sleep = loadImage('assets/sleep_Mode.png');
+  printMode = loadImage('assets/print.png');
+  speak = loadImage('assets/speak.png');
+
+  current_img = og;
+  print_img = loadImage('');
+  speak_img = loadImage('');
+  current_txt = 'Introducing Truthie! The robot that can fact check information. Scan the QR code or print for more in depth info!';
+  
 
   // setup the clickables = this will allocate the array
   clickables = clickablesManager.setup();
 
-  // call OUR function to setup additional information about the p5.clickables
-  // that are not in the array 
+  // call function to setup additional information about the p5.clickables
   setupClickables(); 
-
-  // start with a red balloon
-  newBalloon(redIndex);
 
   // output to the message window
   console.log(clickables);
 }
 
-// Just draw the button
+// draw function
 function draw() {
-  background(128);
+  background(185, 115, 117);
+  fill(230);
+  strokeWeight(0);
+  square(250,75,410);
+  image(current_img,230,60,460,460);
+  image(print_img,230,60,460,460);
+  image(speak_img,230,60,460,460);
 
-  // draw "balloon"
-  drawBalloon();
+ 
+  drawRect();
+  fill(0);
+  textFont('Helvetica', 15);
+  text(current_txt,100,18,800,40);
+  
+  
+  if(gDebugMode == true ){
+    drawDebugInfo();
+  }
 
   // draw the p5.clickables
   clickablesManager.draw();
 }
+//debug
+function keyTyped(){
+  if(key === ' '){
+    gDebugMode = !gDebugMode;
+  }
+}
 
-function drawBalloon() {
-  push();
-  ellipseMode(CENTER);
-  noStroke();
-  fill(balloonColor);
-  circle(250,height/2, ellipseDiameter);
-  pop();
+function drawDebugInfo(){
+  fill(225);
+  text("X: " + mouseX + "  Y:" + mouseY, 20, height - 20);
+}
+
+//rectangle features
+function drawRect(){
+  fill(226,220,222);
+  strokeWeight(0);
+  rect(50,10,800,40);
 }
 
 // change individual fields of the clickables
 function setupClickables() {
-  // set the pop, inflate and deflate to be false, we will change this after
-  // first balloon gets pressed
-  clickables[inflateIndex].visible = false;
-  clickables[deflateIndex].visible = false; 
+  clickables[correctIndex].visible = true;
+  clickables[cautionIndex].visible = true; 
+  clickables[wrongIndex].visible = true;
+  clickables[sleepIndex].visible = true;
+  clickables[printIndex].visible = true;
+  clickables[resetIndex].visible = true;
+  
 
   // These are the CALLBACK functions. Right now, we do the SAME function for all of the clickables
   for( let i = 0; i < clickables.length; i++ ) {
@@ -108,73 +133,64 @@ function setupClickables() {
 //--- CLICKABLE CALLBACK FUNCTIONS ----
 
 clickableButtonPressed = function () {
-// NEW BALLOON
-  if( this.id === redIndex || this.id === greenIndex || this.id === yellowIndex ) {
-    newBalloon(this.id);
+// Changing modes of robot
+  if( this.id === correctIndex) {
+    print_img = loadImage('');
+    speak_img = loadImage('');
+    current_img = correct;
+    current_txt = ('The information is correct!');
+  }
+  else if(this.id === cautionIndex){
+    print_img = loadImage('');
+    speak_img = loadImage('');
+    current_img = caution;
+    current_txt = ('The information is partially correct!');
   }
 
-// INFLATE OR DEFLATE
-  else if( this.id === deflateIndex ) {
-    ellipseDiameter -= deflateAmount;
-    ellipseDiameter = max(minDeflateDiameter,ellipseDiameter);   // prevents < 0
+  else if( this.id === wrongIndex ) {
+    print_img = loadImage('');
+    speak_img = loadImage('');
+    current_img = wrong;
+    current_txt = ('The information is wrong!');
   }
-  else if( this.id === inflateIndex ) {
-    ellipseDiameter += inflateAmount;
-    if( ellipseDiameter > maxDiameter ) {
-      popBalloon();
-    }
+
+  else if( this.id === sleepIndex ) {
+    print_img = loadImage('');
+    speak_img = loadImage('');
+    current_img = sleep;
+    current_txt = ('Truthie is on sleep mode.');
   }
+//features of robot
+  else if( this.id === printIndex ) {
+    print_img = printMode;
+    current_img = current_img;
+    current_txt = ('Printing summary of information!');
+  }
+
+  else if( this.id === speakIndex ) {
+    speak_img = speak;
+    current_img = current_img;
+    current_txt = ('Truthie is speaking!');
+  }
+//reset
+  else if( this.id === resetIndex ) {
+    print_img = loadImage('');
+    speak_img = loadImage('');
+    current_img = og;
+    current_txt = ('Introducing Truthie! The robot that can fact check information. Scan the QR code or print for more in depth info!');
+  }
+
 }
 
-// tint when mouse is over
+// New color when the mouse hovers the button
 clickableButtonHover = function () {
-  this.color = "#AA33AA";
+  this.color = "#CEB1BE";
   this.noTint = false;
   this.tint = "#FF0000";
 }
 
-// color a light gray if off
+// Default color for buttons
 clickableButtonOnOutside = function () {
-  // Change colors based on the id #
-  if( this.id === inflateIndex || this.id === deflateIndex ) {
-    this.color = "#FFFFFF";
-  }
-  else {
-    this.color = "#AAAAAA";
-  }
-
+  this.color = "#F1E4E8";
   this.noTint = true;
 }
-
-//--- BALLOON FUNCTIONS --
-
-// when a new balloon is made, we show pop and inflate and deflate button,
-// change fill color and reset ellipse diamter
-function newBalloon(idNum) {
-  clickables[inflateIndex].visible = true;
-  clickables[deflateIndex].visible = true; 
-  ellipseDiameter = startEllipseDiameter;
-
-  if( idNum === redIndex) {
-    balloonColor = color('#FF0000');
-  }
-  else if( idNum === greenIndex) {
-    balloonColor = color('#00FF00');
-  }
-  else if( idNum === yellowIndex) {
-    balloonColor = color('#FFFF00');
-  }
-}
-
-// if we pop the balloon, then you can't re-pop or inflate or deflate
-function popBalloon() {
-  popSound.play();
-
-  ellipseDiameter = poppedEllipseDiameter;
-
-  // balloon popped, hide these buttons
-  clickables[inflateIndex].visible = false;
-  clickables[deflateIndex].visible = false; 
-}
-
-

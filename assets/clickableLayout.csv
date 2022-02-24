@@ -1,6 +1,8 @@
 ID,Name,PNGFilename,Text,x,y,visible
-0,Red,assets/redBalloon.png,,100,500,yes
-1,Green,assets/greenBalloon.png,,220,500,yes
-2,Yellow,assets/yellowBalloon.png,,340,500,yes
-3,Inflate,,Inflate,100,50,yes
-4,Deflate,,Deflate,300,50,yes
+0,correct,assets/correct_Button.png,,260,500,yes
+1,caution,assets/caution_Button.png,,420,500,yes
+2,wrong,assets/wrong_Button.png,,570,500,yes
+3,sleep,assets/sleep_Button.png,,700,380,yes
+4,print,,Print,100,380,yes
+5,speak,,Speak,100,250,yes
+6,reset,,Reset,700,250,yes
