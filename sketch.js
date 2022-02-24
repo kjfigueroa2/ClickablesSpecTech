@@ -13,7 +13,7 @@ var clickablesManager;
 var clickables;
 var gDebugMode = false;
 
-// indexes into the array (constants) CHANGE to be png for conform and deconform
+// indexes into the array (constants)
 const correctIndex = 0;
 const cautionIndex = 1;
 const wrongIndex = 2;
@@ -59,10 +59,11 @@ function setup() {
   current_txt = ('Introducing Truthie! The robot that can fact check information in real time! Scan the QR code or print for a summary of said info.');
   
 
-  // setup the clickables = this will allocate the array
+  // allocate the ClickableManager in the preload() function
   clickables = clickablesManager.setup();
 
-  // call function to setup additional information about the p5.clickables
+  // call the setup() funciton for ClickableManager in the setup(), after
+  // the class has been allocated in the preload() function.
   setupClickables(); 
 
   // output to the message window
@@ -93,7 +94,7 @@ function draw() {
   // draw the p5.clickables
   clickablesManager.draw();
 }
-//debug
+//debug mode
 function keyTyped(){
   if(key === ' '){
     gDebugMode = !gDebugMode;
