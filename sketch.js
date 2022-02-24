@@ -56,7 +56,7 @@ function setup() {
   current_img = og;
   print_img = loadImage('');
   speak_img = loadImage('');
-  current_txt = 'Introducing Truthie! The robot that can fact check information. Scan the QR code or print for more in depth info!';
+  current_txt = ('Introducing Truthie! The robot that can fact check information in real time! Scan the QR code or print for a summary of said info.');
   
 
   // setup the clickables = this will allocate the array
@@ -83,7 +83,7 @@ function draw() {
   drawRect();
   fill(0);
   textFont('Helvetica', 15);
-  text(current_txt,100,18,800,40);
+  text(current_txt,60,18,800,40);
   
   
   if(gDebugMode == true ){
@@ -109,7 +109,7 @@ function drawDebugInfo(){
 function drawRect(){
   fill(226,220,222);
   strokeWeight(0);
-  rect(50,10,800,40);
+  rect(50,12,800,40);
 }
 
 // change individual fields of the clickables
@@ -177,7 +177,7 @@ clickableButtonPressed = function () {
     print_img = loadImage('');
     speak_img = loadImage('');
     current_img = og;
-    current_txt = ('Introducing Truthie! The robot that can fact check information. Scan the QR code or print for more in depth info!');
+    current_txt = ('Introducing Truthie! The robot that can fact check information in real time! Scan the QR code or print for a summary of said info.');
   }
 
 }
